@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="msal-browser.js"></script>
+  </head>
+  <body>
+    <script>
+      const msalApp = new msal.PublicClientApplication({
+        auth: {
+          clientId: "9fa1d6b8-2380-4f44-a6c8-f3ab7bc4767a",
+          authority:
+            "https://mysteeri.b2clogin.com/mysteeri.onmicrosoft.com/B2C_1_sup",
+          redirectUri:
+            "https://aeraeaeraer.z1.web.core.windows.net/login-frame.html",
+          knownAuthorities: ["mysteeri.b2clogin.com"],
+        },
+        cache: {
+          cacheLocation: "localStorage",
+        },
+        system: {
+          allowRedirectInIframe: true,
+        },
+      });
+
+      const handleFrameLogin = async () => {
+        await msalApp.initialize();
+
+        // Check if we are returning from a redirect
+        const response = await msalApp.handleRedirectPromise();
+        if (response) {
+          console.log("User is logged in", response);
+          // User is logged in, refresh the main page
+          parent.location.reload();
+        } else {
+          // No user signed in, redirect to login
+          msalApp.loginRedirect({});
+        }
+      };
+
+      handleFrameLogin();
+    </script>
+  </body>
+</html>
